@@ -19,7 +19,7 @@ namespace telnetserver
             int d = this.connection.Available;
             while (d == 0)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(10);
                 d = this.connection.Available;
             }
             byte[] buffer = new byte[d];

@@ -17,8 +17,15 @@ namespace telnetserver
         public TelnetServer(Process process) : base(process) { }
         public override int Main(string[] args)
         {
+            string ip = "", port = "", app = "";
+            for(int i = 0; i< args.Length; i++)
+            {
+                if (args[i] == "-ip") ip = args[i + 1];
+                else if (args[i] == "-port") port = args[i + 1];
+                else if (args[i] == "-exec") app = args[i + 1];
+            }
             this.listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this.listener.Bind(new IPEndPoint(IPAddress.Parse("127.127.0.1"), 23));
+            this.listener.Bind(new IPEndPoint(IPAddress.Parse(ip), int.Parse(port)));
             this.listener.Listen(10);
             this.connection = this.listener.Accept();
             int a = this.connection.Available;
@@ -30,7 +37,7 @@ namespace telnetserver
             }
             _sr = new Sr(connection);
             _sw = new Sw(connection);
-            Process p = this.Process.OS.CreateProcess("/bin/vosbox");
+            Process p = this.Process.OS.CreateProcess(app);
             p.Shell.In = _sr;
             p.Shell.Out = _sw;
             p.Start(null);
